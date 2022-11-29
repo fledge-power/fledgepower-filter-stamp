@@ -171,7 +171,7 @@ protected:
         // Vérification SecondSinceEpoch
         DatapointValue * valueSecondSinceEpoch = findValueElement(dpsT, Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH);
         ASSERT_NE(valueSecondSinceEpoch, nullptr);
-        ASSERT_NE(valueSecondSinceEpoch->toDouble(), 0);
+        ASSERT_NE(valueSecondSinceEpoch->toInt(), 0);
 
 		// Vérification of PIVOTTS.GTIS.TmOrg.stVal
         Datapoints * tm_org = findDictElement(dpsGi, Constants::KEY_MESSAGE_PIVOT_JSON_TM_ORG);

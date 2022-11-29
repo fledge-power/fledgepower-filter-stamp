@@ -92,7 +92,7 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
                 // Create timestamp dict
                 Datapoints * vecT = new Datapoints;
                 
-                DatapointValue dvSecond((double)0);
+                DatapointValue dvSecond((long)0);
                 vecT->push_back(new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH, dvSecond));
 
                 DatapointValue dvTimestamp(vecT, true);
@@ -105,21 +105,21 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
             DatapointValue * valueSecondSinceEpoch = findValueElement(dpTimestamp, Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH);
             if (valueSecondSinceEpoch == nullptr) {
                 // Create value SecondSinceEpoch
-                DatapointValue dvSecond((double)0);
+                DatapointValue dvSecond((long)0);
                 Datapoint * dpSecondSinceEpoch = new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH, dvSecond);
                 dpTimestamp->push_back(dpSecondSinceEpoch);
 
                 valueSecondSinceEpoch = &(dpSecondSinceEpoch->getData());
             }
 
-            double secondSinceEpoch = valueSecondSinceEpoch->toDouble();
+            long secondSinceEpoch = valueSecondSinceEpoch->toInt();
             if (secondSinceEpoch == 0) {
                 // Generate timestamp for status points
                 struct timeval timestamp;
                 gettimeofday(&timestamp, NULL);				
                 secondSinceEpoch = *((int64_t*)&timestamp.tv_sec);
                 valueSecondSinceEpoch->setValue(secondSinceEpoch);
-
+        
                 // Generate quality of timestamp on Gatewway
                 this->createQualityTimestamp(dpGiTs);
             }
