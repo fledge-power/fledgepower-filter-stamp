@@ -9,6 +9,7 @@
  * 
  */
 #include <filterStatusPointsTimestamping.h>
+#include <utility.h>
 
 using namespace std;
 using namespace DatapointUtility;
@@ -19,6 +20,7 @@ const string Constants::KEY_MESSAGE_PIVOT_JSON_CDC_SPS              = "SPSTyp";
 const string Constants::KEY_MESSAGE_PIVOT_JSON_CDC_DPS              = "DPSTyp";
 const string Constants::KEY_MESSAGE_PIVOT_JSON_TS                   = "t";
 const string Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH   = "SecondSinceEpoch";
+const string Constants::KEY_MESSAGE_PIVOT_JSON_FRAT_OF_SECOND       = "FractionOfSecond";
 const string Constants::KEY_MESSAGE_PIVOT_JSON_TM_ORG               = "TmOrg";
 const string Constants::KEY_MESSAGE_PIVOT_JSON_TM_VALIDITY          = "TmValidity";
 const string Constants::KEY_MESSAGE_PIVOT_JSON_ST_VAL               = "stVal";
@@ -61,24 +63,24 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
     // Filter enable, process the readings 
     if (isEnabled()) {
         // Just get all the readings in the readingset
-        const Readings & readings = readingSet->getAllReadings();
+        const Readings& readings = readingSet->getAllReadings();
         for (auto reading = readings.cbegin(); reading != readings.cend(); reading++) {
             
             // Get datapoints on readings
-            Datapoints & dataPoints = (*reading)->getReadingData();
+            Datapoints& dataPoints = (*reading)->getReadingData();
             string assetName = (*reading)->getAssetName();
 
-            Datapoints * dpPivotTS = findDictElement(&dataPoints, Constants::KEY_MESSAGE_PIVOT_JSON_ROOT);
+            Datapoints *dpPivotTS = findDictElement(&dataPoints, Constants::KEY_MESSAGE_PIVOT_JSON_ROOT);
             if (dpPivotTS == nullptr) {
                 continue;
             }
 
-            Datapoints * dpGiTs = findDictElement(dpPivotTS, Constants::KEY_MESSAGE_PIVOT_JSON_GT);
+            Datapoints *dpGiTs = findDictElement(dpPivotTS, Constants::KEY_MESSAGE_PIVOT_JSON_GT);
             if (dpGiTs == nullptr) {
                 continue;
             }
 
-            Datapoints * dpTyp = findDictElement(dpGiTs, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_SPS);
+            Datapoints *dpTyp = findDictElement(dpGiTs, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_SPS);
             if (dpTyp == nullptr) {
                 dpTyp = findDictElement(dpGiTs, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_DPS);
                 
@@ -87,26 +89,26 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
                 }
             }
 
-            Datapoints * dpTimestamp = findDictElement(dpTyp, Constants::KEY_MESSAGE_PIVOT_JSON_TS);
+            Datapoints *dpTimestamp = findDictElement(dpTyp, Constants::KEY_MESSAGE_PIVOT_JSON_TS);
             if (dpTimestamp == nullptr) {
                 // Create timestamp dict
-                Datapoints * vecT = new Datapoints;
+                Datapoints *vecT = new Datapoints;
                 
                 DatapointValue dvSecond((long)0);
                 vecT->push_back(new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH, dvSecond));
 
                 DatapointValue dvTimestamp(vecT, true);
-                Datapoint * dpT = new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_TS, dvTimestamp);
+                Datapoint *dpT = new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_TS, dvTimestamp);
                 dpTyp->push_back(dpT);
 
                 dpTimestamp = dpT->getData().getDpVec();
             }
 
-            DatapointValue * valueSecondSinceEpoch = findValueElement(dpTimestamp, Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH);
+            DatapointValue *valueSecondSinceEpoch = findValueElement(dpTimestamp, Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH);
             if (valueSecondSinceEpoch == nullptr) {
                 // Create value SecondSinceEpoch
                 DatapointValue dvSecond((long)0);
-                Datapoint * dpSecondSinceEpoch = new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH, dvSecond);
+                Datapoint *dpSecondSinceEpoch = new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH, dvSecond);
                 dpTimestamp->push_back(dpSecondSinceEpoch);
 
                 valueSecondSinceEpoch = &(dpSecondSinceEpoch->getData());
@@ -116,9 +118,21 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
             if (secondSinceEpoch == 0) {
                 // Generate timestamp for status points
                 struct timeval timestamp;
-                gettimeofday(&timestamp, NULL);				
-                secondSinceEpoch = *((int64_t*)&timestamp.tv_sec);
-                valueSecondSinceEpoch->setValue(secondSinceEpoch);
+                gettimeofday(&timestamp, NULL);
+                long tsMs = timestamp.tv_sec + (timestamp.tv_usec / 1000L);
+
+                DatapointValue *valueFractionOfSecond = findValueElement(dpTimestamp, Constants::KEY_MESSAGE_PIVOT_JSON_FRAT_OF_SECOND);
+                if (valueFractionOfSecond == nullptr) {
+                    DatapointValue dvFrac((long)0);
+                    Datapoint *dpFractionOfSecond = new Datapoint(Constants::KEY_MESSAGE_PIVOT_JSON_FRAT_OF_SECOND, dvFrac);
+                    dpTimestamp->push_back(dpFractionOfSecond);
+
+                    valueFractionOfSecond = &(dpFractionOfSecond->getData());
+                }
+
+                pair<long, long> tsCalc = Utility::fromTimestamp(tsMs);
+                valueSecondSinceEpoch->setValue(tsCalc.first);
+                valueFractionOfSecond->setValue(tsCalc.second);
         
                 // Generate quality of timestamp on Gatewway
                 this->createQualityTimestamp(dpGiTs);
@@ -150,10 +164,10 @@ void FilterStatusPointsTimestamping::reconfigure(const std::string& newConfig) {
  * Create dict value of timestamp quality 
  * Timestamp quality is set to valid
 */
-void FilterStatusPointsTimestamping::createQualityTimestamp(Datapoints * dpDict) {
-    Datapoint * dpTmOrg = createDictElement(dpDict, Constants::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
+void FilterStatusPointsTimestamping::createQualityTimestamp(Datapoints *dpDict) {
+    Datapoint *dpTmOrg = createDictElement(dpDict, Constants::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
     createStringElement(dpTmOrg->getData().getDpVec(), Constants::KEY_MESSAGE_PIVOT_JSON_ST_VAL, Constants::STR_SUBSTITUTED);
     
-    Datapoint * dpTmValidity = createDictElement(dpDict, Constants::KEY_MESSAGE_PIVOT_JSON_TM_VALIDITY);
+    Datapoint *dpTmValidity = createDictElement(dpDict, Constants::KEY_MESSAGE_PIVOT_JSON_TM_VALIDITY);
     createStringElement(dpTmValidity->getData().getDpVec(), Constants::KEY_MESSAGE_PIVOT_JSON_ST_VAL, Constants::STR_VALID);
 }

@@ -25,6 +25,7 @@ struct Constants {
     static const std::string KEY_MESSAGE_PIVOT_JSON_CDC_DPS;
     static const std::string KEY_MESSAGE_PIVOT_JSON_TS;
     static const std::string KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH;
+    static const std::string KEY_MESSAGE_PIVOT_JSON_FRAT_OF_SECOND;
     static const std::string KEY_MESSAGE_PIVOT_JSON_TM_ORG;
     static const std::string KEY_MESSAGE_PIVOT_JSON_TM_VALIDITY;
     static const std::string KEY_MESSAGE_PIVOT_JSON_ST_VAL;
@@ -48,7 +49,7 @@ public:
 private:
     std::mutex      m_configMutex;
 
-    void createQualityTimestamp(DatapointUtility::Datapoints * dpDict);
+    void createQualityTimestamp(DatapointUtility::Datapoints *dpDict);
 };
 
 #endif  // INCLUDE_FILTER_STATUS_POINTS_TIMESTAMPING_H_
