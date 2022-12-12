@@ -3,6 +3,7 @@
 
 #include <filterStatusPointsTimestamping.h>
 #include <jsonToDatapoints.h>
+#include <constantsSpTimestamping.h>
 
 using namespace std;
 using namespace DatapointUtility;
@@ -92,7 +93,7 @@ static string jsonMessageDpsTyp = QUOTE({
 extern "C" {
 	PLUGIN_INFORMATION *plugin_info();
 	void plugin_ingest(void *handle, READINGSET *readingSet);
-	PLUGIN_HANDLE plugin_init(ConfigCategory* config,
+	PLUGIN_HANDLE plugin_init(ConfigCategory *config,
 			  OUTPUT_HANDLE *outHandle,
 			  OUTPUT_STREAM output);
 	
@@ -104,8 +105,8 @@ extern "C" {
 class StatusPointsTimestamping : public testing::Test
 {
 protected:
-    FilterStatusPointsTimestamping * filter = nullptr;  // Object on which we call for tests
-    ReadingSet * resultReading;
+    FilterStatusPointsTimestamping *filter = nullptr;  // Object on which we call for tests
+    ReadingSet *resultReading;
 
     // Setup is ran for every tests, so each variable are reinitialised
     void SetUp() override
@@ -131,13 +132,13 @@ protected:
         ASSERT_NE(filter, (void *)NULL);
 
         // Create Reading
-        Datapoints * p = parseJson(json);
-        Reading* reading = new Reading(nameReading, *p);
+        Datapoints *p = parseJson(json);
+        Reading *reading = new Reading(nameReading, *p);
         Readings *readings = new Readings;
         readings->push_back(reading);
 
         // Create ReadingSet
-        ReadingSet * readingSet = new ReadingSet(readings);
+        ReadingSet *readingSet = new ReadingSet(readings);
 
         plugin_ingest(filter, (READINGSET*)readingSet);
         Readings results = resultReading->getAllReadings();
@@ -156,64 +157,64 @@ protected:
     }
 
     void verifyDatapoint(Datapoints * dps, string nameTyp) {
-        Datapoints * dpsPivot = findDictElement(dps, Constants::KEY_MESSAGE_PIVOT_JSON_ROOT);
+        Datapoints *dpsPivot = findDictElement(dps, ConstantsSpTimestamping::KeyMessagePivotJsonRoot);
         ASSERT_NE(dpsPivot, nullptr);
 
-        Datapoints * dpsGi = findDictElement(dpsPivot, Constants::KEY_MESSAGE_PIVOT_JSON_GT);
+        Datapoints *dpsGi = findDictElement(dpsPivot, ConstantsSpTimestamping::KeyMessagePivotJsonGt);
         ASSERT_NE(dpsGi, nullptr);
 
-        Datapoints * dpsTyp = findDictElement(dpsGi, nameTyp);
+        Datapoints *dpsTyp = findDictElement(dpsGi, nameTyp);
         ASSERT_NE(dpsTyp, nullptr);
 
-        Datapoints * dpsT = findDictElement(dpsTyp, Constants::KEY_MESSAGE_PIVOT_JSON_TS);
+        Datapoints *dpsT = findDictElement(dpsTyp, ConstantsSpTimestamping::KeyMessagePivotJsonTS);
         ASSERT_NE(dpsT, nullptr);
 
         // Vérification SecondSinceEpoch
-        DatapointValue * valueSecondSinceEpoch = findValueElement(dpsT, Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH);
+        DatapointValue *valueSecondSinceEpoch = findValueElement(dpsT, ConstantsSpTimestamping::KeyMessagePivotJsonSecondSinceEpoch);
         ASSERT_NE(valueSecondSinceEpoch, nullptr);
         ASSERT_NE(valueSecondSinceEpoch->toInt(), 0);
 
 		// Vérification of FractionOfSecond
-        DatapointValue * valueFractionOfSecond = findValueElement(dpsT, Constants::KEY_MESSAGE_PIVOT_JSON_FRAT_OF_SECOND);
+        DatapointValue *valueFractionOfSecond = findValueElement(dpsT, ConstantsSpTimestamping::KeyMessagePivotJsonFractionOfSeconds);
         ASSERT_NE(valueFractionOfSecond, nullptr);
         ASSERT_NE(valueFractionOfSecond->toInt(), 0);
 
 		// Vérification of PIVOTTS.GTIS.TmOrg.stVal
-        Datapoints * tm_org = findDictElement(dpsGi, Constants::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
+        Datapoints *tm_org = findDictElement(dpsGi, ConstantsSpTimestamping::KeyMessagePivotJsonTmOrg);
         ASSERT_NE(tm_org, nullptr);
 
-		DatapointValue * tm_org_st_val = findValueElement(tm_org, Constants::KEY_MESSAGE_PIVOT_JSON_ST_VAL);
+		DatapointValue *tm_org_st_val = findValueElement(tm_org, ConstantsSpTimestamping::KeyMessagePivotJsonStVal);
         ASSERT_NE(tm_org_st_val, nullptr);
 
-        ASSERT_STREQ(tm_org_st_val->toStringValue().c_str(), Constants::STR_SUBSTITUTED.c_str());
+        ASSERT_STREQ(tm_org_st_val->toStringValue().c_str(), ConstantsSpTimestamping::ValueSubstituted.c_str());
         
 		// Vérification of PIVOTTS.GTIS.TmOrg.stVal
-        Datapoints * tm_validity = findDictElement(dpsGi, Constants::KEY_MESSAGE_PIVOT_JSON_TM_VALIDITY);
+        Datapoints *tm_validity = findDictElement(dpsGi, ConstantsSpTimestamping::KeyMessagePivotJsonTmValidity);
         ASSERT_NE(tm_validity, nullptr);
 
-		DatapointValue * tm_validity_st_val = findValueElement(tm_validity, Constants::KEY_MESSAGE_PIVOT_JSON_ST_VAL);
+		DatapointValue *tm_validity_st_val = findValueElement(tm_validity, ConstantsSpTimestamping::KeyMessagePivotJsonStVal);
         ASSERT_NE(tm_validity_st_val, nullptr);
 
-        ASSERT_STREQ(tm_validity_st_val->toStringValue().c_str(), Constants::STR_VALID.c_str());
+        ASSERT_STREQ(tm_validity_st_val->toStringValue().c_str(), ConstantsSpTimestamping::ValueValid.c_str());
     }
 };
 
 TEST_F(StatusPointsTimestamping, SpsTyp) 
 {
-	startTests(jsonMessageSpsTyp, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_SPS);
+	startTests(jsonMessageSpsTyp, ConstantsSpTimestamping::KeyMessagePivotJsonCdcSps);
 }
 
 TEST_F(StatusPointsTimestamping, DpsTyp) 
 {
-	startTests(jsonMessageDpsTyp, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_DPS);
+	startTests(jsonMessageDpsTyp, ConstantsSpTimestamping::KeyMessagePivotJsonCdcDps);
 }
 
 TEST_F(StatusPointsTimestamping, WithoutDictTS) 
 {
-	startTests(jsonMessageWithoutDictTs, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_SPS);
+	startTests(jsonMessageWithoutDictTs, ConstantsSpTimestamping::KeyMessagePivotJsonCdcSps);
 }
 
 TEST_F(StatusPointsTimestamping, WithoutSecondSiceEpoch) 
 {
-	startTests(jsonMessageWithoutSecondSinceEpoch, Constants::KEY_MESSAGE_PIVOT_JSON_CDC_SPS);
+	startTests(jsonMessageWithoutSecondSinceEpoch, ConstantsSpTimestamping::KeyMessagePivotJsonCdcSps);
 }

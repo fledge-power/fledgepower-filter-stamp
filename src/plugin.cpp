@@ -10,8 +10,7 @@
  */
 #include <version.h>
 #include <filterStatusPointsTimestamping.h>
-
-#define FILTER_NAME "status-points-timestamping"
+#include <constantsSpTimestamping.h>
 
 static const char *default_config = QUOTE({
 		"plugin" : {
@@ -117,7 +116,6 @@ void plugin_shutdown(PLUGIN_HANDLE *handle)
 {
 	FilterStatusPointsTimestamping *filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *)handle;
 	delete filterStatusPointsTimestamping;
-	filterStatusPointsTimestamping = nullptr;
 }
 
 // End of extern "C"

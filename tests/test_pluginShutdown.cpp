@@ -17,8 +17,8 @@ extern "C" {
 class PluginShutdown : public testing::Test
 {
 protected:
-    FilterStatusPointsTimestamping * filter = nullptr;  // Object on which we call for tests
-    ReadingSet * resultReading;
+    FilterStatusPointsTimestamping *filter = nullptr;  // Object on which we call for tests
+    ReadingSet *resultReading;
 
     // Setup is ran for every tests, so each variable are reinitialised
     void SetUp() override

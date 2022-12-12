@@ -3,6 +3,7 @@
 
 #include <filterStatusPointsTimestamping.h>
 #include <jsonToDatapoints.h>
+#include <constantsSpTimestamping.h>
 
 using namespace std;
 using namespace DatapointUtility;
@@ -77,7 +78,7 @@ static string jsonMessageMvTyp = QUOTE({
 extern "C" {
 	PLUGIN_INFORMATION *plugin_info();
 	void plugin_ingest(void *handle, READINGSET *readingSet);
-	PLUGIN_HANDLE plugin_init(ConfigCategory* config,
+	PLUGIN_HANDLE plugin_init(ConfigCategory *config,
 			  OUTPUT_HANDLE *outHandle,
 			  OUTPUT_STREAM output);
 	
@@ -89,8 +90,8 @@ extern "C" {
 class NoModifyData : public testing::Test
 {
 protected:
-    FilterStatusPointsTimestamping * filter = nullptr;  // Object on which we call for tests
-    ReadingSet * resultReading;
+    FilterStatusPointsTimestamping *filter = nullptr;  // Object on which we call for tests
+    ReadingSet *resultReading;
 
     // Setup is ran for every tests, so each variable are reinitialised
     void SetUp() override
@@ -113,24 +114,24 @@ protected:
     }
 };
 
-static double getSecondSinceEpoch(Datapoints * dps, string namePivotData, string nameGi, string nameTyp) {
-	Datapoints * dpsPivot = findDictElement(dps, namePivotData);
+static double getSecondSinceEpoch(Datapoints *dps, string namePivotData, string nameGi, string nameTyp) {
+	Datapoints *dpsPivot = findDictElement(dps, namePivotData);
 	if (dpsPivot == nullptr) {
 		return -1;
 	}
-	Datapoints * dpsGi = findDictElement(dpsPivot, nameGi);
+	Datapoints *dpsGi = findDictElement(dpsPivot, nameGi);
 	if (dpsGi == nullptr) {
 		return -1;
 	}
-	Datapoints * dpsTyp = findDictElement(dpsGi, nameTyp);
+	Datapoints *dpsTyp = findDictElement(dpsGi, nameTyp);
 	if (dpsTyp == nullptr) {
 		return -1;
 	}
-	Datapoints * dpsT = findDictElement(dpsTyp, Constants::KEY_MESSAGE_PIVOT_JSON_TS);
+	Datapoints *dpsT = findDictElement(dpsTyp, ConstantsSpTimestamping::KeyMessagePivotJsonTS);
 	if (dpsT == nullptr) {
 		return -1;
 	}
-	DatapointValue * valueSecondSinceEpoch = findValueElement(dpsT, Constants::KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH);
+	DatapointValue *valueSecondSinceEpoch = findValueElement(dpsT, ConstantsSpTimestamping::KeyMessagePivotJsonSecondSinceEpoch);
 	if (valueSecondSinceEpoch == nullptr) {
 		return -1;
 	}
@@ -142,13 +143,13 @@ TEST_F(NoModifyData, PIVOTTM)
 	ASSERT_NE(filter, (void *)NULL);
 	
     // Create Reading
-    Datapoints * p = parseJson(jsonMessagePivotTM.c_str());
-	Reading* reading = new Reading(nameReading, *p);
+    Datapoints *p = parseJson(jsonMessagePivotTM.c_str());
+	Reading *reading = new Reading(nameReading, *p);
     Readings *readings = new Readings;
     readings->push_back(reading);
 
     // Create ReadingSet
-    ReadingSet * readingSet = new ReadingSet(readings);
+    ReadingSet *readingSet = new ReadingSet(readings);
 
 	plugin_ingest(filter, (READINGSET*)readingSet);
 	Readings results = resultReading->getAllReadings();
@@ -165,7 +166,6 @@ TEST_F(NoModifyData, PIVOTTM)
 	ASSERT_EQ(secondSinceEpoch, 0);
 
 	delete reading;
-    //delete dataobjects;
 }
 
 TEST_F(NoModifyData, GTIM) 
@@ -173,13 +173,13 @@ TEST_F(NoModifyData, GTIM)
 	ASSERT_NE(filter, (void *)NULL);
 
     // Create Reading
-   	Datapoints * p = parseJson(jsonMessageGiTm.c_str());
-	Reading* reading = new Reading(nameReading, *p);
+   	Datapoints *p = parseJson(jsonMessageGiTm.c_str());
+	Reading *reading = new Reading(nameReading, *p);
     Readings *readings = new Readings;
     readings->push_back(reading);
 
     // Create ReadingSet
-    ReadingSet * readingSet = new ReadingSet(readings);
+    ReadingSet *readingSet = new ReadingSet(readings);
 
 	plugin_ingest(filter, (READINGSET*)readingSet);
 	Readings results = resultReading->getAllReadings();
@@ -203,13 +203,13 @@ TEST_F(NoModifyData, MvTyp)
 	ASSERT_NE(filter, (void *)NULL);
 
     // Create Reading
-    Datapoints * p = parseJson(jsonMessageMvTyp.c_str());
-	Reading* reading = new Reading(nameReading, *p);
+    Datapoints *p = parseJson(jsonMessageMvTyp.c_str());
+	Reading *reading = new Reading(nameReading, *p);
     Readings *readings = new Readings;
     readings->push_back(reading);
 
     // Create ReadingSet
-    ReadingSet * readingSet = new ReadingSet(readings);
+    ReadingSet *readingSet = new ReadingSet(readings);
 
 	plugin_ingest(filter, (READINGSET*)readingSet);
 	Readings results = resultReading->getAllReadings();

@@ -20,11 +20,11 @@ using namespace DatapointUtility;
  * @param json : string json 
  * @return vector of datapoints
 */
-Datapoints * JsonToDatapoints::parseJson(string json) {
+Datapoints *JsonToDatapoints::parseJson(string json) {
 	
 	Document document;
 
-	const auto & parseResult = document.Parse(const_cast<char*>(json.c_str()));
+	const auto& parseResult = document.Parse(const_cast<char*>(json.c_str()));
     if (parseResult.HasParseError()) {
         Logger::getLogger()->fatal("Parsing error %d (%s).", parseResult.GetParseError(), json.c_str());
         printf("Parsing error %d (%s).", parseResult.GetParseError(), json.c_str());
@@ -43,16 +43,13 @@ Datapoints * JsonToDatapoints::parseJson(string json) {
  * @param document : object rapidjon 
  * @return vector of datapoints
 */
-Datapoints * JsonToDatapoints::recursivJson(const Value & document) {
-	Datapoints * p = new Datapoints;
+Datapoints *JsonToDatapoints::recursivJson(const Value& document) {
+	Datapoints *p = new Datapoints;
 
 	for (Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr)
-	{
-		Logger::getLogger()->debug("Type of member %s is %d",
-			itr->name.GetString(), itr->value.GetType());
-        
+	{        
 		if (itr->value.IsObject()) {
-			Datapoints * vec = recursivJson(itr->value);
+			Datapoints *vec = recursivJson(itr->value);
 			DatapointValue d(vec, true);
 			p->push_back(new Datapoint(itr->name.GetString(), d));
 		}

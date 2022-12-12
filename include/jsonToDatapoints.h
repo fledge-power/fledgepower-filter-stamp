@@ -17,8 +17,8 @@
 namespace JsonToDatapoints {
 
     // Parsing JSON to datapoints
-    DatapointUtility::Datapoints * parseJson(std::string json);
-    DatapointUtility::Datapoints * recursivJson(const rapidjson::Value & document);
+    DatapointUtility::Datapoints *parseJson(std::string json);
+    DatapointUtility::Datapoints *recursivJson(const rapidjson::Value& document);
 };
 
 #endif  // INCLUDE_JSON_TO_DATAPOINT_H_

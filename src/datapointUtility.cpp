@@ -16,9 +16,9 @@ using namespace std;
 /*
 *
 */
-DatapointUtility::Datapoints* DatapointUtility::findDictElement(Datapoints* dict, const string& key) {
+DatapointUtility::Datapoints *DatapointUtility::findDictElement(Datapoints *dict, const string& key) {
     if (dict != nullptr) {
-        for (Datapoint* dp : *dict) {
+        for (Datapoint *dp : *dict) {
             if (dp->getName() == key) {
                 DatapointValue& data = dp->getData();
                 if (data.getType() == DatapointValue::T_DP_DICT) {
@@ -33,9 +33,9 @@ DatapointUtility::Datapoints* DatapointUtility::findDictElement(Datapoints* dict
 /*
 *
 */
-DatapointValue* DatapointUtility::findValueElement(Datapoints* dict, const string& key) {
+DatapointValue *DatapointUtility::findValueElement(Datapoints *dict, const string& key) {
     if (dict != nullptr) {
-        for (Datapoint* dp : *dict) {
+        for (Datapoint *dp : *dict) {
             if (dp->getName() == key) {
                 return &dp->getData();
             }
@@ -47,9 +47,9 @@ DatapointValue* DatapointUtility::findValueElement(Datapoints* dict, const strin
 /*
 *
 */
-Datapoint * DatapointUtility::findDatapointElement(Datapoints* dict, const string & key) {
+Datapoint *DatapointUtility::findDatapointElement(Datapoints *dict, const string& key) {
     if (dict != nullptr) {
-        for (Datapoint* dp : *dict) {
+        for (Datapoint *dp : *dict) {
             if (dp->getName() == key) {
                 return dp;
             }
@@ -61,9 +61,9 @@ Datapoint * DatapointUtility::findDatapointElement(Datapoints* dict, const strin
 /*
 *
 */
-string DatapointUtility::findStringElement(Datapoints* dict, const string& key) {
+string DatapointUtility::findStringElement(Datapoints *dict, const string& key) {
     if (dict != nullptr) {
-        for (Datapoint* dp : *dict) {
+        for (Datapoint *dp : *dict) {
             if (dp->getName() == key) {
                 DatapointValue& data = dp->getData();
                 const DatapointValue::dataTagType dType(data.getType());
@@ -82,9 +82,9 @@ string DatapointUtility::findStringElement(Datapoints* dict, const string& key) 
  * @param dps dict of values 
  * @param key key of dict 
 */
-void DatapointUtility::deleteValue(Datapoints *dps, const string & key) {
+void DatapointUtility::deleteValue(Datapoints *dps, const string& key) {
     vector<Datapoint*>::iterator it1 = dps->end();
-    Datapoint * d = nullptr;
+    Datapoint *d = nullptr;
     for (vector<Datapoint*>::iterator it = dps->begin(); it != dps->end(); it++){
         if ((*it)->getName() == key) {
             it1 = it;
@@ -107,12 +107,12 @@ void DatapointUtility::deleteValue(Datapoints *dps, const string & key) {
  * @param valueDefault value attribute of dict
  * @return pointer of the created datapoint
  */
-Datapoint * DatapointUtility::createIntegerElement(Datapoints * dps, const string & key, long valueDefault) {
+Datapoint *DatapointUtility::createIntegerElement(Datapoints *dps, const string& key, long valueDefault) {
 
     deleteValue(dps, key);
 
     DatapointValue dv(valueDefault);
-    Datapoint * dp = new Datapoint(key, dv);
+    Datapoint *dp = new Datapoint(key, dv);
     dps->push_back(dp);
 
     return dp;
@@ -126,12 +126,12 @@ Datapoint * DatapointUtility::createIntegerElement(Datapoints * dps, const strin
  * @param valueDefault value attribute of dict
  * @return pointer of the created datapoint
  */
-Datapoint * DatapointUtility::createStringElement(Datapoints * dps, const string & key, const string & valueDefault) {
+Datapoint *DatapointUtility::createStringElement(Datapoints *dps, const string& key, const string& valueDefault) {
 
     deleteValue(dps, key);
 
     DatapointValue dv(valueDefault);
-    Datapoint * dp = new Datapoint(key, dv);
+    Datapoint *dp = new Datapoint(key, dv);
     dps->push_back(dp);
 
     return dp;
@@ -144,13 +144,13 @@ Datapoint * DatapointUtility::createStringElement(Datapoints * dps, const string
  * @param key key of dict
  * @return pointer of the created datapoint
  */
-Datapoint * DatapointUtility::createDictElement(Datapoints * dps, const string & key) {
+Datapoint *DatapointUtility::createDictElement(Datapoints* dps, const string& key) {
 
    deleteValue(dps, key);
 
-    Datapoints * newVec = new Datapoints;
+    Datapoints *newVec = new Datapoints;
 	DatapointValue dv(newVec, true);
-    Datapoint * dp = new Datapoint(key, dv);
+    Datapoint *dp = new Datapoint(key, dv);
     dps->push_back(dp);
 
     return dp;

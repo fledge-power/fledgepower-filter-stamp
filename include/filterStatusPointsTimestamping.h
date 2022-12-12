@@ -18,21 +18,6 @@
 
 #include <datapointUtility.h>
 
-struct Constants {
-    static const std::string KEY_MESSAGE_PIVOT_JSON_ROOT;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_GT;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_CDC_SPS;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_CDC_DPS;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_TS;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_SECOND_SINCE_EPOCH;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_FRAT_OF_SECOND;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_TM_ORG;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_TM_VALIDITY;
-    static const std::string KEY_MESSAGE_PIVOT_JSON_ST_VAL;
-    static const std::string STR_SUBSTITUTED;
-    static const std::string STR_VALID;
-};
-
 class FilterStatusPointsTimestamping  : public FledgeFilter
 {
 public:  

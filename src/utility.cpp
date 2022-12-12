@@ -26,7 +26,7 @@ long Utility::toTimestamp(long secondSinceEpoch, long fractionOfSecond) {
 
 /**
  * Convert timestamp (ms) in pair of secondSinceEpoch and fractionOfSecond
- * @param timestamp : timestamp (ms) * 
+ * @param timestamp : timestamp (ms) 
  * @return pair of secondSinceEpoch and fractionOfSecond
 */
 std::pair<long, long> Utility::fromTimestamp(long timestamp) {
