@@ -17,16 +17,18 @@ using namespace std;
 *
 */
 DatapointUtility::Datapoints *DatapointUtility::findDictElement(Datapoints *dict, const string& key) {
-    if (dict != nullptr) {
-        for (Datapoint *dp : *dict) {
-            if (dp->getName() == key) {
-                DatapointValue& data = dp->getData();
-                if (data.getType() == DatapointValue::T_DP_DICT) {
-                    return data.getDpVec();
-                }
+    if (dict == nullptr) {
+        return nullptr;
+    }
+    for (Datapoint *dp : *dict) {
+        if (dp->getName() == key) {
+            DatapointValue& data = dp->getData();
+            if (data.getType() == DatapointValue::T_DP_DICT) {
+                return data.getDpVec();
             }
         }
     }
+    
     return nullptr;
 }
 
@@ -34,13 +36,15 @@ DatapointUtility::Datapoints *DatapointUtility::findDictElement(Datapoints *dict
 *
 */
 DatapointValue *DatapointUtility::findValueElement(Datapoints *dict, const string& key) {
-    if (dict != nullptr) {
-        for (Datapoint *dp : *dict) {
-            if (dp->getName() == key) {
-                return &dp->getData();
-            }
+    if (dict == nullptr) {
+        return nullptr;
+    }
+    for (Datapoint *dp : *dict) {
+        if (dp->getName() == key) {
+            return &dp->getData();
         }
     }
+    
     return nullptr;
 }
 
@@ -48,11 +52,12 @@ DatapointValue *DatapointUtility::findValueElement(Datapoints *dict, const strin
 *
 */
 Datapoint *DatapointUtility::findDatapointElement(Datapoints *dict, const string& key) {
-    if (dict != nullptr) {
-        for (Datapoint *dp : *dict) {
-            if (dp->getName() == key) {
-                return dp;
-            }
+    if (dict == nullptr) {
+        return nullptr;
+    }
+    for (Datapoint *dp : *dict) {
+        if (dp->getName() == key) {
+            return dp;
         }
     }
     return nullptr;
@@ -62,14 +67,16 @@ Datapoint *DatapointUtility::findDatapointElement(Datapoints *dict, const string
 *
 */
 string DatapointUtility::findStringElement(Datapoints *dict, const string& key) {
-    if (dict != nullptr) {
-        for (Datapoint *dp : *dict) {
-            if (dp->getName() == key) {
-                DatapointValue& data = dp->getData();
-                const DatapointValue::dataTagType dType(data.getType());
-                if (dType == DatapointValue::T_STRING) {
-                    return data.toStringValue();
-                }
+    if (dict == nullptr) {
+        return "";
+    }
+    
+    for (Datapoint *dp : *dict) {
+        if (dp->getName() == key) {
+            DatapointValue& data = dp->getData();
+            const DatapointValue::dataTagType dType(data.getType());
+            if (dType == DatapointValue::T_STRING) {
+                return data.toStringValue();
             }
         }
     }
@@ -83,9 +90,9 @@ string DatapointUtility::findStringElement(Datapoints *dict, const string& key) 
  * @param key key of dict 
 */
 void DatapointUtility::deleteValue(Datapoints *dps, const string& key) {
-    vector<Datapoint*>::iterator it1 = dps->end();
+    auto it1 = dps->end();
     Datapoint *d = nullptr;
-    for (vector<Datapoint*>::iterator it = dps->begin(); it != dps->end(); it++){
+    for (auto it = dps->begin(); it != dps->end(); it++){
         if ((*it)->getName() == key) {
             it1 = it;
             d = *it;
@@ -112,7 +119,7 @@ Datapoint *DatapointUtility::createIntegerElement(Datapoints *dps, const string&
     deleteValue(dps, key);
 
     DatapointValue dv(valueDefault);
-    Datapoint *dp = new Datapoint(key, dv);
+    auto dp = new Datapoint(key, dv);
     dps->push_back(dp);
 
     return dp;
@@ -131,7 +138,7 @@ Datapoint *DatapointUtility::createStringElement(Datapoints *dps, const string& 
     deleteValue(dps, key);
 
     DatapointValue dv(valueDefault);
-    Datapoint *dp = new Datapoint(key, dv);
+    auto dp = new Datapoint(key, dv);
     dps->push_back(dp);
 
     return dp;
@@ -148,9 +155,9 @@ Datapoint *DatapointUtility::createDictElement(Datapoints* dps, const string& ke
 
    deleteValue(dps, key);
 
-    Datapoints *newVec = new Datapoints;
+    auto newVec = new Datapoints;
 	DatapointValue dv(newVec, true);
-    Datapoint *dp = new Datapoint(key, dv);
+    auto dp = new Datapoint(key, dv);
     dps->push_back(dp);
 
     return dp;

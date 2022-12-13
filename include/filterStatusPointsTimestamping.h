@@ -26,8 +26,6 @@ public:
                         OUTPUT_HANDLE *outHandle,
                         OUTPUT_STREAM output);
 
-    ~FilterStatusPointsTimestamping();
-
     void ingest(READINGSET *readingSet);
     void reconfigure(const std::string& newConfig);
 

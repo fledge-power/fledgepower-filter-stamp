@@ -76,7 +76,7 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 			  OUTPUT_HANDLE *outHandle,
 			  OUTPUT_STREAM output)
 {
-	FilterStatusPointsTimestamping *filterStatusPointsTimestamping = new FilterStatusPointsTimestamping(FILTER_NAME,
+	auto filterStatusPointsTimestamping = new FilterStatusPointsTimestamping(FILTER_NAME,
                                         *config,
                                         outHandle,
                                         output);
@@ -93,7 +93,7 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 void plugin_ingest(PLUGIN_HANDLE *handle,
 		   READINGSET *readingSet)
 {
-	FilterStatusPointsTimestamping *filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *) handle;
+	auto filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *) handle;
 	filterStatusPointsTimestamping->ingest(readingSet);
 }
 
@@ -105,7 +105,7 @@ void plugin_ingest(PLUGIN_HANDLE *handle,
  */
 void plugin_reconfigure(PLUGIN_HANDLE *handle, const string& newConfig)
 {
-	FilterStatusPointsTimestamping *filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *)handle;
+	auto filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *)handle;
 	filterStatusPointsTimestamping->reconfigure(newConfig);
 }
 
@@ -114,7 +114,7 @@ void plugin_reconfigure(PLUGIN_HANDLE *handle, const string& newConfig)
  */
 void plugin_shutdown(PLUGIN_HANDLE *handle)
 {
-	FilterStatusPointsTimestamping *filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *)handle;
+	auto filterStatusPointsTimestamping = (FilterStatusPointsTimestamping *)handle;
 	delete filterStatusPointsTimestamping;
 }
 

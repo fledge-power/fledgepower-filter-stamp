@@ -9,7 +9,7 @@
  * 
  */
 #include <filterStatusPointsTimestamping.h>
-#include <utility.h>
+#include <utilityPivot.h>
 #include <constantsSpTimestamping.h>
 
 using namespace std;
@@ -33,11 +33,6 @@ FilterStatusPointsTimestamping::FilterStatusPointsTimestamping(const std::string
                                 FledgeFilter(filterName, filterConfig, outHandle, output)
 {
 }
-
-/**
- * Destructor for this filter class
- */
-FilterStatusPointsTimestamping::~FilterStatusPointsTimestamping() {}
 
 /**
  * The actual filtering code
@@ -86,13 +81,13 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
             if (dpTimestamp == nullptr) {
 
                 // Create timestamp dict
-                Datapoints *vecT = new Datapoints;
+                auto vecT = new Datapoints;
                 
                 DatapointValue dvSecond((long)0);
                 vecT->push_back(new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonSecondSinceEpoch, dvSecond));
 
                 DatapointValue dvTimestamp(vecT, true);
-                Datapoint *dpT = new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonTS, dvTimestamp);
+                auto dpT = new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonTS, dvTimestamp);
                 dpTyp->push_back(dpT);
 
                 dpTimestamp = dpT->getData().getDpVec();
@@ -103,7 +98,7 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
                 
                 // Create value SecondSinceEpoch
                 DatapointValue dvSecond((long)0);
-                Datapoint *dpSecondSinceEpoch = new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonSecondSinceEpoch, dvSecond);
+                auto dpSecondSinceEpoch = new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonSecondSinceEpoch, dvSecond);
                 dpTimestamp->push_back(dpSecondSinceEpoch);
 
                 valueSecondSinceEpoch = &(dpSecondSinceEpoch->getData());
@@ -113,19 +108,19 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
             if (secondSinceEpoch == 0) {
                 // Generate timestamp for status points
                 struct timeval timestamp;
-                gettimeofday(&timestamp, NULL);
+                gettimeofday(&timestamp, nullptr);
                 long tsMs = timestamp.tv_sec + (timestamp.tv_usec / 1000L);
 
                 DatapointValue *valueFractionOfSecond = findValueElement(dpTimestamp, ConstantsSpTimestamping::KeyMessagePivotJsonFractionOfSeconds);
                 if (valueFractionOfSecond == nullptr) {
                     DatapointValue dvFrac((long)0);
-                    Datapoint *dpFractionOfSecond = new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonFractionOfSeconds, dvFrac);
+                    auto dpFractionOfSecond = new Datapoint(ConstantsSpTimestamping::KeyMessagePivotJsonFractionOfSeconds, dvFrac);
                     dpTimestamp->push_back(dpFractionOfSecond);
 
                     valueFractionOfSecond = &(dpFractionOfSecond->getData());
                 }
 
-                pair<long, long> tsCalc = Utility::fromTimestamp(tsMs);
+                pair<long, long> tsCalc = UtilityPivot::fromTimestamp(tsMs);
                 valueSecondSinceEpoch->setValue(tsCalc.first);
                 valueFractionOfSecond->setValue(tsCalc.second);
 

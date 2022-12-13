@@ -28,15 +28,15 @@ if (${CMAKE_BUILD_TYPE} STREQUAL Coverage)
                                       EXECUTABLE RunTests
                                       DEPENDENCIES RunTests
                                       BASE_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                                      EXCLUDE "tests/*"
+                                      EXCLUDE "test/*" "src/datapointUtility.cpp" "src/jsonToDatapoints.cpp"
   )    
   
   setup_target_for_coverage_gcovr_html(NAME "${PROJECT_NAME}_coverage_html"
                                        EXECUTABLE RunTests
                                        DEPENDENCIES RunTests
                                        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                                       EXCLUDE "tests/*"
-  )
+                                       EXCLUDE "test/*" "src/datapointUtility.cpp" "src/jsonToDatapoints.cpp"
+)
   message(STATUS "Using Fledge dev package includes2 " ${FLEDGE_INCLUDE})
 else()
   message("Build without Coverage") 
