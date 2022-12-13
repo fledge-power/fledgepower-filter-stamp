@@ -74,6 +74,26 @@ static string jsonMessageMvTyp = QUOTE({
 	}
 });
 
+static string jsonMessageWithSincediff0 = QUOTE({
+	"PIVOTTS" : { 
+		"GTIS": {
+			"SPSTyp": {
+			  "q": {
+				"Source": "process",
+				"Validity": "good"
+			  },
+			  "t": {
+				"FractionOfSecond": 1,
+				"SecondSinceEpoch": 1
+			  },
+			  "mag": {
+				"f": 0
+			  }
+			},
+			"Identifier": "ID1"
+		}
+	}
+});
  
 extern "C" {
 	PLUGIN_INFORMATION *plugin_info();
@@ -135,7 +155,7 @@ static double getSecondSinceEpoch(Datapoints *dps, string namePivotData, string 
 	if (valueSecondSinceEpoch == nullptr) {
 		return -1;
 	}
-	return valueSecondSinceEpoch->toDouble();
+	return valueSecondSinceEpoch->toInt();
 }
 
 TEST_F(NoModifyData, PIVOTTM) 
@@ -197,6 +217,37 @@ TEST_F(NoModifyData, GTIM)
 
 	delete reading;
 }
+
+TEST_F(NoModifyData, WithSincediff0) 
+{
+	ASSERT_NE(filter, (void *)NULL);
+
+    // Create Reading
+   	Datapoints *p = parseJson(jsonMessageWithSincediff0.c_str());
+	Reading *reading = new Reading(nameReading, *p);
+    Readings *readings = new Readings;
+    readings->push_back(reading);
+
+    // Create ReadingSet
+    ReadingSet *readingSet = new ReadingSet(readings);
+
+	plugin_ingest(filter, (READINGSET*)readingSet);
+	Readings results = resultReading->getAllReadings();
+	ASSERT_EQ(results.size(), 1);
+
+	Reading *out = results[0];
+	ASSERT_STREQ(out->getAssetName().c_str(), "data_test");
+	ASSERT_EQ(out->getDatapointCount(), 1);
+	
+	Datapoints points = out->getReadingData();
+	ASSERT_EQ(points.size(), 1);
+
+	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOTTS", "GTIS", "SPSTyp");
+	ASSERT_EQ(secondSinceEpoch, 1);
+
+	delete reading;
+}
+
 
 TEST_F(NoModifyData, MvTyp) 
 {
