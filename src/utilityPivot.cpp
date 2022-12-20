@@ -8,8 +8,9 @@
  * Author: Yannick Marchetaux
  * 
  */
-#include <utilityPivot.h>
 #include <cmath>
+#include <sys/time.h>
+#include <utilityPivot.h>
 
 /**
  * Convert secondSinceEpoch and secondSinceEpoch to timestamp
@@ -33,4 +34,14 @@ std::pair<long, long> UtilityPivot::fromTimestamp(long timestamp) {
     long remainder = (timestamp % 1000L);
     long fractionOfSecond = remainder * 16777 + ((remainder * 216) / 1000);
     return std::make_pair(timestamp / 1000L, fractionOfSecond);
+}
+
+/**
+ * Get current timestamp in milisecond
+ * @return timestamp in ms
+*/
+long UtilityPivot::getCurrentTimestampMs() {
+    struct timeval timestamp;
+    gettimeofday(&timestamp, NULL);
+    return timestamp.tv_sec * 1000 + (timestamp.tv_usec / 1000L);
 }

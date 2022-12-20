@@ -14,7 +14,7 @@ static string nameReading = "data_test";
 static string jsonMessagePivotTM = QUOTE({
 	"PIVOTTM" : { 
 		"GTIS": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
@@ -33,9 +33,9 @@ static string jsonMessagePivotTM = QUOTE({
 });
 
 static string jsonMessageGiTm = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIM": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
@@ -54,7 +54,7 @@ static string jsonMessageGiTm = QUOTE({
 });
 
 static string jsonMessageMvTyp = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
 			"MvTyp": {
 			  "q": {
@@ -75,9 +75,9 @@ static string jsonMessageMvTyp = QUOTE({
 });
 
 static string jsonMessageWithSincediff0 = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
@@ -182,7 +182,7 @@ TEST_F(NoModifyData, PIVOTTM)
 	Datapoints points = out->getReadingData();
 	ASSERT_EQ(points.size(), 1);
 
-	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOTTM", "GTIS", "SPSTyp");
+	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOTTM", "GTIS", "SpsTyp");
 	ASSERT_EQ(secondSinceEpoch, 0);
 
 	delete reading;
@@ -212,7 +212,7 @@ TEST_F(NoModifyData, GTIM)
 	Datapoints points = out->getReadingData();
 	ASSERT_EQ(points.size(), 1);
 
-	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOTTS", "GTIM", "SPSTyp");
+	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOT", "GTIM", "SpsTyp");
 	ASSERT_EQ(secondSinceEpoch, 0);
 
 	delete reading;
@@ -242,7 +242,7 @@ TEST_F(NoModifyData, WithSincediff0)
 	Datapoints points = out->getReadingData();
 	ASSERT_EQ(points.size(), 1);
 
-	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOTTS", "GTIS", "SPSTyp");
+	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOT", "GTIS", "SpsTyp");
 	ASSERT_EQ(secondSinceEpoch, 1);
 
 	delete reading;
@@ -273,7 +273,7 @@ TEST_F(NoModifyData, MvTyp)
 	Datapoints points = out->getReadingData();
 	ASSERT_EQ(points.size(), 1);
 
-	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOTTS", "GTIS", "MvTyp");
+	double secondSinceEpoch = getSecondSinceEpoch(&points, "PIVOT", "GTIS", "MvTyp");
 	ASSERT_EQ(secondSinceEpoch, 0);
 
 	delete reading;

@@ -117,7 +117,7 @@ void FilterStatusPointsTimestamping::ingest(READINGSET *readingSet)
         // Generate timestamp for status points
         struct timeval timestamp;
         gettimeofday(&timestamp, nullptr);
-        long tsMs = timestamp.tv_sec + (timestamp.tv_usec / 1000L);
+        long tsMs = timestamp.tv_sec * 1000 + (timestamp.tv_usec / 1000L);
 
         DatapointValue *valueFractionOfSecond = findValueElement(dpTimestamp, ConstantsSpTimestamping::KeyMessagePivotJsonFractionOfSeconds);
         if (valueFractionOfSecond == nullptr) {

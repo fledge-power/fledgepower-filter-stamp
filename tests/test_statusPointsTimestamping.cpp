@@ -12,9 +12,9 @@ using namespace JsonToDatapoints;
 static string nameReading = "data_test";
 
 static string jsonMessageWithoutSecondSinceEpoch = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
@@ -32,9 +32,9 @@ static string jsonMessageWithoutSecondSinceEpoch = QUOTE({
 });
 
 static string jsonMessageWithoutDictTs = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
@@ -49,9 +49,9 @@ static string jsonMessageWithoutDictTs = QUOTE({
 });
 
 static string jsonMessageSpsTyp = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
@@ -70,9 +70,9 @@ static string jsonMessageSpsTyp = QUOTE({
 });
 
 static string jsonMessageDpsTyp = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
-			"DPSTyp": {
+			"DpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"

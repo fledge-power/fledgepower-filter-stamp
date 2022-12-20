@@ -17,9 +17,9 @@ static string reconfigure = QUOTE({
 });
 
 static string jsonMessageSpsTyp = QUOTE({
-	"PIVOTTS" : { 
+	"PIVOT" : { 
 		"GTIS": {
-			"SPSTyp": {
+			"SpsTyp": {
 			  "q": {
 				"Source": "process",
 				"Validity": "good"
