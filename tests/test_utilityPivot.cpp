@@ -2,11 +2,12 @@
 #include <gtest/gtest.h>
 
 #include <sys/time.h>
+#include <thread>
 #include <utilityPivot.h>
 
 using namespace std;
 
-TEST(TestUtility, convertTimestamp) 
+TEST(TestUtilityPivot, convertTimestamp) 
 {
     struct timeval timestamp;
     gettimeofday(&timestamp, NULL);
@@ -23,3 +24,14 @@ TEST(TestUtility, convertTimestamp)
     }
 }
 
+TEST(TestUtilityPivot, getTimestamp) 
+{
+    long t1 = (long)(UtilityPivot::getCurrentTimestampMs() / 1000L);
+
+    // sleep
+    this_thread::sleep_for(chrono::milliseconds(1000));
+
+    long t2 = (long)(UtilityPivot::getCurrentTimestampMs() / 1000L);
+
+    ASSERT_EQ(t1 + 1, t2);   
+}

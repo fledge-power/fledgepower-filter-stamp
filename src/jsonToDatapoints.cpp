@@ -44,7 +44,7 @@ Datapoints *JsonToDatapoints::parseJson(const string& json) {
  * @return vector of datapoints
 */
 Datapoints *JsonToDatapoints::recursivJson(const Value& document) {
-	auto p = new Datapoints;
+	Datapoints *p = new Datapoints;
 
 	for (Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr)
 	{        

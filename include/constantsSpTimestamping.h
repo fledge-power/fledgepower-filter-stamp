@@ -5,22 +5,22 @@
 
 #define FILTER_NAME "status-points-timestamping"
 
-struct ConstantsSpTimestamping {
+namespace ConstantsSpTimestamping {
 
-    static const std::string NamePlugin;
-
-    static const std::string KeyMessagePivotJsonRoot;
-    static const std::string KeyMessagePivotJsonGt;
-    static const std::string KeyMessagePivotJsonCdcSps;
-    static const std::string KeyMessagePivotJsonCdcDps;
-    static const std::string KeyMessagePivotJsonTS;
-    static const std::string KeyMessagePivotJsonSecondSinceEpoch;
-    static const std::string KeyMessagePivotJsonFractionOfSeconds;
-    static const std::string KeyMessagePivotJsonTmOrg;
-    static const std::string KeyMessagePivotJsonTmValidity;
-    static const std::string KeyMessagePivotJsonStVal;
-    static const std::string ValueSubstituted;
-    static const std::string ValueValid;
+    static const std::string NamePlugin             = FILTER_NAME;
+    
+    static const std::string KeyMessagePivotJsonRoot                   = "PIVOT";
+    static const std::string KeyMessagePivotJsonGt                     = "GTIS";
+    static const std::string KeyMessagePivotJsonCdcSps                 = "SpsTyp";
+    static const std::string KeyMessagePivotJsonCdcDps                 = "DpsTyp";
+    static const std::string KeyMessagePivotJsonTS                     = "t";
+    static const std::string KeyMessagePivotJsonSecondSinceEpoch       = "SecondSinceEpoch";
+    static const std::string KeyMessagePivotJsonFractionOfSeconds      = "FractionOfSecond";
+    static const std::string KeyMessagePivotJsonTmOrg                  = "TmOrg";
+    static const std::string KeyMessagePivotJsonTmValidity             = "TmValidity";
+    static const std::string KeyMessagePivotJsonStVal                  = "stVal";
+    static const std::string ValueSubstituted                          = "substituted";
+    static const std::string ValueValid                                = "valid";
 };
 
 #endif //INCLUDE_CONSTANTS_SP_TIMESTAMPING_H_
